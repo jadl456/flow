@@ -118,6 +118,7 @@ class FlowComposer extends StatefulWidget {
     this.padding,
     this.borderRadius,
     this.style,
+    this.contextMenuBuilder,
   }) : assert(maxLines > 0, 'maxLines must be positive'),
        assert(
          onAttach == null || onAttachmentsPicked == null,
@@ -326,6 +327,11 @@ class FlowComposer extends StatefulWidget {
   /// Per-instance restyling, merged over [FlowTheme.composerStyle]'s
   /// fields; nulls fall through to the theme tokens.
   final FlowComposerStyle? style;
+
+  /// The selection toolbar for the field, built by the host over the
+  /// SDK's [EditableTextState] (copy, select-all and a paste of the
+  /// host's own). Null keeps the package's default toolbar.
+  final EditableTextContextMenuBuilder? contextMenuBuilder;
 
   @override
   State<FlowComposer> createState() => _FlowComposerState();
@@ -992,6 +998,9 @@ class _FlowComposerState extends State<FlowComposer> {
                                     color: colors.onSurface,
                                   )
                                   .merge(style?.textStyle),
+                              // Host-built selection toolbar (image-aware
+                              // paste); null keeps the package's default.
+                              contextMenuBuilder: widget.contextMenuBuilder,
                               // Android's IME rich-content path, the one media
                               // input the SDK covers without a plugin.
                               contentInsertionConfiguration:
